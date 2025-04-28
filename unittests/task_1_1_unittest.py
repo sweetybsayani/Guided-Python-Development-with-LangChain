@@ -5,11 +5,11 @@ import unittest
 import os
 import sys
 
-# Find the correct paths based on the expected structure
+# Set up the correct path to the research_assistant.py file
 current_dir = os.path.dirname(os.path.abspath(__file__))
-base_dir = os.path.dirname(os.path.dirname(current_dir))  # Go up to project root
-src_main_python = os.path.join(base_dir, "src", "main", "python")
-sys.path.append(src_main_python)
+project_root = os.path.dirname(current_dir)  # Go up to project root
+python_dir = os.path.join(project_root, "src", "main", "python")
+sys.path.append(python_dir)
 
 class TestRequiredLibraries(unittest.TestCase):
     def test_required_imports(self):
@@ -17,22 +17,12 @@ class TestRequiredLibraries(unittest.TestCase):
         print("\nCHECKING TASK 1.1: REQUIRED LIBRARIES")
         print("="*50)
         
-        # Print debugging info to verify paths
-        print(f"Current directory: {current_dir}")
-        print(f"Base directory: {base_dir}")
-        print(f"Looking for python files in: {src_main_python}")
-        
         # Get the path to the research_assistant.py file
-        file_path = os.path.join(src_main_python, 'research_assistant.py')
+        file_path = os.path.join(python_dir, 'research_assistant.py')
         
         print(f"Checking if {file_path} exists...")
         if not os.path.exists(file_path):
             print(f"ERROR: {file_path} not found!")
-            # List files in the directory to help debug
-            if os.path.exists(src_main_python):
-                print(f"Files found in {src_main_python}:")
-                for f in os.listdir(src_main_python):
-                    print(f"  - {f}")
             self.fail(f"research_assistant.py file not found. Make sure it's in the correct location.")
         else:
             print(f"File found at {file_path}")
