@@ -140,11 +140,11 @@ python src/main/python/research_assistant.py --test
 ```
 This will:
 
-Load the sample document
-Process the document automatically
-Run through predefined test questions
-Generate a summary of the document
-Display all results without requiring user input
+- Load the sample document
+- Process the document automatically
+- Run through predefined test questions
+- Generate a summary of the document
+- Display all results without requiring user input
 
 ## Testing Your Implementation
 
