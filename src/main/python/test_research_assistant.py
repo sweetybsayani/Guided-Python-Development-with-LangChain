@@ -1,67 +1,68 @@
 """
-Unit test for Task 1.1: Import Required Libraries
+Unit tests for the ResearchAssistant class
 """
 import unittest
 import os
 import sys
+from research_assistant import ResearchAssistant, load_document
 
-# Add the parent directory to path so we can import the module
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.join(current_dir, "..", "..", "python")
-sys.path.append(parent_dir)
-
-class TestRequiredLibraries(unittest.TestCase):
-    def test_required_imports(self):
-        """Test that all required libraries are imported correctly"""
-        print("\nCHECKING TASK 1.1: REQUIRED LIBRARIES")
-        print("="*50)
+class TestResearchAssistant(unittest.TestCase):
+    def setUp(self):
+        """Set up a research assistant and sample document for each test"""
+        self.assistant = ResearchAssistant()
+        self.sample_text = """
+        LangChain is a framework for developing applications powered by language models.
+        It enables applications that are context-aware and reason about their environment.
+        The core components include models, prompts, memory, chains and agents.
+        """
         
-        # Get the path to the research_assistant.py file
-        file_path = os.path.join(parent_dir, 'research_assistant.py')
+        # Create a temporary sample document file for testing
+        with open("temp_sample.txt", "w", encoding="utf-8") as f:
+            f.write(self.sample_text)
         
-        print(f"Checking if {file_path} exists...")
-        if not os.path.exists(file_path):
-            print(f"ERROR: {file_path} not found!")
-            self.fail(f"research_assistant.py file not found. Make sure it's in the correct location.")
-        else:
-            print(f"File found at {file_path}")
+    def tearDown(self):
+        """Clean up temporary files after tests"""
+        if os.path.exists("temp_sample.txt"):
+            os.remove("temp_sample.txt")
         
-        # Read the file content
-        print("Reading file content...")
-        with open(file_path, 'r') as f:
-            content = f.read()
-            
-        # Check for simplified required imports
-        print("\nChecking for required library imports:")
+    def test_load_document(self):
+        """Test that document loading works correctly"""
+        # Test with existing file
+        loaded_text = load_document("temp_sample.txt")
+        self.assertEqual(loaded_text.strip(), self.sample_text.strip())
         
-        # Check PromptTemplate import
-        if "from langchain.prompts import PromptTemplate" in content:
-            print("✅ PromptTemplate is correctly imported from langchain.prompts")
-        else:
-            print("❌ ERROR: PromptTemplate is not imported correctly!")
-            print("  SOLUTION: Add 'from langchain.prompts import PromptTemplate' at the top of your file")
-            self.assertIn("from langchain.prompts import PromptTemplate", content,
-                         "You need to import PromptTemplate from langchain.prompts")
-            
-        # Check LLMChain import
-        if "from langchain.chains import LLMChain" in content:
-            print("✅ LLMChain is correctly imported from langchain.chains")
-        else:
-            print("❌ ERROR: LLMChain is not imported correctly!")
-            print("  SOLUTION: Add 'from langchain.chains import LLMChain' at the top of your file")
-            self.assertIn("from langchain.chains import LLMChain", content,
-                         "You need to import LLMChain from langchain.chains")
-            
-        # Check os import
-        if "import os" in content:
-            print("✅ os is correctly imported")
-        else:
-            print("❌ ERROR: os is not imported!")
-            print("  SOLUTION: Add 'import os' at the top of your file")
-            self.assertIn("import os", content,
-                         "You need to import the os module")
+        # Test with non-existent file
+        error_result = load_document("nonexistent_file.txt")
+        self.assertTrue(error_result.startswith("Error"))
         
-        print("\nTASK 1.1 COMPLETE! All required libraries are correctly imported.")
+    def test_document_processing(self):
+        """Test that document processing works correctly"""
+        result = self.assistant.process_document(self.sample_text)
+        self.assertTrue("successfully" in result.lower())
+        self.assertEqual(self.assistant.document, self.sample_text)
+        self.assertTrue(len(self.assistant.document_chunks) > 0)
+        
+    def test_question_answering_without_document(self):
+        """Test behavior when asking a question without processing a document first"""
+        answer = self.assistant.ask_question("What is LangChain?")
+        self.assertTrue("process" in answer.lower())  # Should mention processing a document
+        
+    def test_question_answering(self):
+        """Test that question answering works after processing a document"""
+        self.assistant.process_document(self.sample_text)
+        answer = self.assistant.ask_question("What is LangChain?")
+        self.assertTrue(len(answer) > 0)  # We should get some answer
+        
+    def test_document_summarization_without_document(self):
+        """Test behavior when generating a summary without processing a document first"""
+        summary = self.assistant.generate_summary()
+        self.assertTrue("process" in summary.lower())  # Should mention processing a document
+        
+    def test_document_summarization(self):
+        """Test that summarization works after processing a document"""
+        self.assistant.process_document(self.sample_text)
+        summary = self.assistant.generate_summary()
+        self.assertTrue(len(summary) > 0)  # We should get some summary
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
