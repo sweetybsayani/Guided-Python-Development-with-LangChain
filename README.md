@@ -91,7 +91,7 @@ python src/main/python/research_assistant.py --test
 To test a specific task, run the corresponding unit test. For example:
 
 ```bash
-python src/unittests/task_1_1_unittest.py
+python unittests/task_1_1_unittest.py
 ```
 
 To run all tests, navigate to the `unittests` directory and run:
