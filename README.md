@@ -20,6 +20,7 @@ Before starting this lab, make sure you have:
 │   │   └── python/
 │   │       ├── research_assistant.py         # Main file for implementing your code
 │   │       └── sample_document.txt           # Sample document for testing
+│   │       └── test_research_assistant.py
 │   └── unittests/
 │       ├── task_1_1_unittest.py              # Unit test for Task 1.1
 │       ├── task_1_2_unittest.py              # Unit test for Task 1.2
