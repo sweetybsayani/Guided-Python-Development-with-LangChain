@@ -12,31 +12,6 @@ Before starting this lab, make sure you have:
 - Understanding of programming concepts like functions and conditionals
 - Familiarity with simple data structures like lists and dictionaries
 
-## File Structure
-
-```
-├── src/
-│   ├── main/
-│   │   └── python/
-│   │       ├── research_assistant.py         # Main file for implementing your code
-│   │       └── sample_document.txt           # Sample document for testing
-│   │       └── test_research_assistant.py
-│   └── unittests/
-│       ├── task_1_1_unittest.py              # Unit test for Task 1.1
-│       ├── task_1_2_unittest.py              # Unit test for Task 1.2
-│       ├── task_1_3_unittest.py              # Unit test for Task 1.3
-│       ├── task_2_1_unittest.py              # Unit test for Task 2.1
-│       ├── task_2_2_unittest.py              # Unit test for Task 2.2
-│       ├── task_3_1_unittest.py              # Unit test for Task 3.1
-│       ├── task_3_2_unittest.py              # Unit test for Task 3.2
-│       ├── task_3_3_unittest.py              # Unit test for Task 3.3
-│       ├── task_4_1_unittest.py              # Unit test for Task 4.1
-│       ├── task_4_2_unittest.py              # Unit test for Task 4.2
-│       └── task_4_3_unittest.py              # Unit test for Task 4.3
-├── requirements.txt                          # Dependencies for the project
-└── README.md                                 # This file
-```
-
 ## Installation
 
 1. Create a virtual environment:
@@ -152,6 +127,31 @@ To test a specific task, run the corresponding unit test. For example:
 
 ```bash
 python unittests/task_1_1_unittest.py
+```
+
+## File Structure
+
+```
+├── src/
+│   ├── main/
+│   │   └── python/
+│   │       ├── research_assistant.py         # Main file for implementing your code
+│   │       └── sample_document.txt           # Sample document for testing
+│   │       └── test_research_assistant.py
+│   └── unittests/
+│       ├── task_1_1_unittest.py              # Unit test for Task 1.1
+│       ├── task_1_2_unittest.py              # Unit test for Task 1.2
+│       ├── task_1_3_unittest.py              # Unit test for Task 1.3
+│       ├── task_2_1_unittest.py              # Unit test for Task 2.1
+│       ├── task_2_2_unittest.py              # Unit test for Task 2.2
+│       ├── task_3_1_unittest.py              # Unit test for Task 3.1
+│       ├── task_3_2_unittest.py              # Unit test for Task 3.2
+│       ├── task_3_3_unittest.py              # Unit test for Task 3.3
+│       ├── task_4_1_unittest.py              # Unit test for Task 4.1
+│       ├── task_4_2_unittest.py              # Unit test for Task 4.2
+│       └── task_4_3_unittest.py              # Unit test for Task 4.3
+├── requirements.txt                          # Dependencies for the project
+└── README.md                                 # This file
 ```
 
 ## Lab Structure
