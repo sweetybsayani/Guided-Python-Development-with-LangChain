@@ -1,21 +1,10 @@
 """
-A Python AI Research Assistant using LangChain
+An AI Research Assistant using LangChain & Python
 """
+from langchain.llms.fake import FakeListLLM  # Use LangChain's built-in fake LLM
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 import os
-
-class MockLLM:
-    """A simple mock LLM that returns predefined responses in sequence"""
-    def __init__(self, responses):
-        self.responses = responses
-        self.counter = 0
-    
-    def invoke(self, prompt):
-        """Return the next response in the sequence"""
-        response = self.responses[self.counter % len(self.responses)]
-        self.counter += 1
-        return response
 
 class ResearchAssistant:
     """A simple AI research assistant for processing documents and answering questions"""
@@ -27,7 +16,8 @@ class ResearchAssistant:
             "According to the document, natural language processing enables computers to understand human language.",
             "The document mentions that LangChain is a framework for developing LLM-powered applications."
         ]
-        self.llm = MockLLM(responses)
+        # Use LangChain's built-in FakeListLLM which is already compatible
+        self.llm = FakeListLLM(responses=responses)
         
         # Initialize document storage
         self.document = None
@@ -81,9 +71,9 @@ class ResearchAssistant:
         chain = LLMChain(llm=self.llm, prompt=prompt)
         
         # Run the chain with the question and context
-        answer = chain.run(question=question, context=context)
+        answer = chain.invoke({"question": question, "context": context})
         
-        return answer.strip()
+        return answer.get("text", "").strip()
     
     def generate_summary(self, max_chunks=3):
         """Generate a summary of the document"""
@@ -112,9 +102,9 @@ class ResearchAssistant:
         chain = LLMChain(llm=self.llm, prompt=prompt)
         
         # Generate the summary
-        summary = chain.run(text=content_to_summarize)
+        summary = chain.invoke({"text": content_to_summarize})
         
-        return summary.strip()
+        return summary.get("text", "").strip()
 
 def load_document(filename):
     """Load document text from a file"""
