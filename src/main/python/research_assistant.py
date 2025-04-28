@@ -1,5 +1,5 @@
 """
-A simplified AI Research Assistant using LangChain
+A Python AI Research Assistant using LangChain
 """
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
