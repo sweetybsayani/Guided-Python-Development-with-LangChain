@@ -1,31 +1,38 @@
-from langchain.llms.fake import FakeListLLM
+"""
+A simplified AI Research Assistant using LangChain
+"""
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain.embeddings import FakeEmbeddings
-from langchain.schema import Document
 import os
 
+class MockLLM:
+    """A simple mock LLM that returns predefined responses in sequence"""
+    def __init__(self, responses):
+        self.responses = responses
+        self.counter = 0
+    
+    def invoke(self, prompt):
+        """Return the next response in the sequence"""
+        response = self.responses[self.counter % len(self.responses)]
+        self.counter += 1
+        return response
+
 class ResearchAssistant:
+    """A simple AI research assistant for processing documents and answering questions"""
     def __init__(self):
-        # Initialize with a mock LLM that returns predefined responses
+        # Initialize with mock responses
         responses = [
             "This document discusses artificial intelligence and its applications.",
             "Based on the document, machine learning is a subset of artificial intelligence.",
             "According to the document, natural language processing enables computers to understand human language.",
             "The document mentions that LangChain is a framework for developing LLM-powered applications."
         ]
-        self.llm = FakeListLLM(responses=responses)
+        self.llm = MockLLM(responses)
         
         # Initialize document storage
         self.document = None
         self.document_chunks = []
         
-        # Initialize the embeddings and vector store
-        self.embeddings = FakeEmbeddings(size=1536)  # Using typical embedding dimension
-        self.vector_store = None
-    
     def process_document(self, document_text):
         """Process a document and prepare it for queries"""
         print(f"Processing document of length: {len(document_text)} characters")
@@ -33,54 +40,26 @@ class ResearchAssistant:
         # Store the original document
         self.document = document_text
         
-        # Create a text splitter
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len,
-        )
-        
-        # Split the document into chunks
-        self.document_chunks = text_splitter.split_text(document_text)
+        # Split the document into simple chunks of 1000 characters
+        self.document_chunks = []
+        chunk_size = 1000
+        for i in range(0, len(document_text), chunk_size):
+            chunk = document_text[i:i+chunk_size]
+            if chunk.strip():  # Only add non-empty chunks
+                self.document_chunks.append(chunk)
         
         print(f"Document split into {len(self.document_chunks)} chunks")
-        
-        # Convert text chunks to Documents with metadata
-        documents = [
-            Document(page_content=chunk, metadata={"chunk_id": i}) 
-            for i, chunk in enumerate(self.document_chunks)
-        ]
-        
-        # Create vector store from documents
-        self.vector_store = FAISS.from_documents(documents, self.embeddings)
-        
         return f"Document processed successfully and split into {len(self.document_chunks)} chunks"
-    
-    def retrieve_relevant_chunks(self, question, k=2):
-        """Retrieve the chunks most relevant to the question"""
-        if not self.vector_store:
-            return []
-        
-        # Retrieve relevant documents from the vector store
-        retrieved_docs = self.vector_store.similarity_search(question, k=k)
-        
-        # Extract the content from the retrieved documents
-        relevant_chunks = [doc.page_content for doc in retrieved_docs]
-        
-        return relevant_chunks
     
     def ask_question(self, question):
         """Ask a question about the processed document"""
         if not self.document:
             return "Please process a document first."
         
-        # Retrieve relevant chunks
-        relevant_chunks = self.retrieve_relevant_chunks(question)
+        # Retrieve the first two chunks as context
+        relevant_chunks = self.document_chunks[:2] if len(self.document_chunks) >= 2 else self.document_chunks
         
-        if not relevant_chunks:
-            return "I couldn't find relevant information to answer your question."
-        
-        # Combine the relevant chunks
+        # Combine the chunks
         context = "\n\n".join(relevant_chunks)
         
         # Create a prompt template for question answering
@@ -111,8 +90,7 @@ class ResearchAssistant:
         if not self.document_chunks:
             return "Please process a document first."
         
-        # For longer documents, use only a subset of chunks for the summary
-        # Starting with the first chunk as it often contains the introduction
+        # Use only a subset of chunks for the summary
         chunks_to_summarize = self.document_chunks[:min(max_chunks, len(self.document_chunks))]
         content_to_summarize = "\n\n".join(chunks_to_summarize)
         
@@ -148,121 +126,72 @@ def load_document(filename):
     
     return text
 
-def run_cli():
-    """Run the Research Assistant in command-line interface mode"""
-    assistant = ResearchAssistant()
-    print("AI Research Assistant initialized. Type 'exit' to quit at any time.")
-    
-    # Document loading
-    while True:
-        file_path = input("\nEnter the path to a document file: ")
-        if file_path.lower() == 'exit':
-            return
-        
-        document_text = load_document(file_path)
-        if document_text.startswith("Error"):
-            print(document_text)
-            continue
-        else:
-            print(f"Document loaded successfully! Length: {len(document_text)} characters")
-            break
-    
-    # Process the document
-    result = assistant.process_document(document_text)
-    print(result)
-    
-    # Command loop
-    while True:
-        print("\nWhat would you like to do?")
-        print("1. Ask a question about the document")
-        print("2. Generate a document summary")
-        print("3. Load a different document")
-        print("4. Exit")
-        
-        choice = input("Enter your choice (1-4): ")
-        
-        if choice == '1':
-            question = input("Enter your question: ")
-            if question.lower() == 'exit':
-                return
-            answer = assistant.ask_question(question)
-            print(f"\nAnswer: {answer}")
-            
-        elif choice == '2':
-            max_chunks = input("Enter maximum number of chunks to summarize (default 3): ")
-            if max_chunks.lower() == 'exit':
-                return
-            try:
-                max_chunks = int(max_chunks) if max_chunks else 3
-            except ValueError:
-                print("Invalid input. Using default value of 3.")
-                max_chunks = 3
-            
-            summary = assistant.generate_summary(max_chunks)
-            print(f"\nSummary: {summary}")
-            
-        elif choice == '3':
-            file_path = input("Enter the path to a document file: ")
-            if file_path.lower() == 'exit':
-                return
-            
-            document_text = load_document(file_path)
-            if document_text.startswith("Error"):
-                print(document_text)
-                continue
-            else:
-                print(f"Document loaded successfully! Length: {len(document_text)} characters")
-                result = assistant.process_document(document_text)
-                print(result)
-                
-        elif choice == '4' or choice.lower() == 'exit':
-            print("Goodbye!")
-            break
-            
-        else:
-            print("Invalid choice. Please enter a number between 1 and 4.")
-
-# Main execution
+# Run this script as a demo
 if __name__ == "__main__":
     import sys
     
-    # Check for command line argument
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        # Run the test suite
-        assistant = ResearchAssistant()
-        print("Research Assistant initialized successfully!")
-        
-        # Load a document
+    # Check if we should run the test automatically
+    auto_run = "--test" in sys.argv
+    
+    print("AI Research Assistant initialized.")
+    assistant = ResearchAssistant()
+    
+    # Automatically run with sample document in test mode
+    if auto_run:
         sample_document = "sample_document.txt"
+        print(f"Loading document: {sample_document}")
         document_text = load_document(sample_document)
         
         if document_text.startswith("Error"):
             print(document_text)
-        else:
-            print(f"Document loaded successfully! Length: {len(document_text)} characters")
-            print(f"Preview: {document_text[:100]}...")
+            sys.exit(1)
             
-            # Process the document
-            result = assistant.process_document(document_text)
-            print(result)
-            
-            # Test question answering
-            print("\nTesting question answering:")
-            test_questions = [
-                "What is artificial intelligence?",
-                "What is LangChain used for?",
-                "How does natural language processing work?"
-            ]
-            
-            for question in test_questions:
-                print(f"\nQuestion: {question}")
-                answer = assistant.ask_question(question)
-                print(f"Answer: {answer}")
-            
-            # Test document summarization
-            print("\nGenerating document summary:")
-            summary = assistant.generate_summary()
-            print(f"Summary: {summary}")
+        print(f"Document loaded successfully! Length: {len(document_text)} characters")
+        
+        # Process the document
+        result = assistant.process_document(document_text)
+        print(result)
+        
+        # Test question answering
+        print("\nTesting question answering:")
+        test_questions = [
+            "What is artificial intelligence?",
+            "What is LangChain used for?",
+            "How does natural language processing work?"
+        ]
+        
+        for question in test_questions:
+            print(f"\nQuestion: {question}")
+            answer = assistant.ask_question(question)
+            print(f"Answer: {answer}")
+        
+        # Test document summarization
+        print("\nGenerating document summary:")
+        summary = assistant.generate_summary()
+        print(f"Summary: {summary}")
+        
+        print("\nTest completed successfully!")
     else:
-        # Run the CLI
-        run_cli()
+        # Interactive mode
+        file_path = input("Enter the path to a document file: ")
+        document_text = load_document(file_path)
+        
+        if document_text.startswith("Error"):
+            print(document_text)
+            sys.exit(1)
+            
+        print(f"Document loaded successfully! Length: {len(document_text)} characters")
+        
+        # Process the document
+        result = assistant.process_document(document_text)
+        print(result)
+        
+        # Ask a question
+        question = input("\nEnter a question about the document: ")
+        answer = assistant.ask_question(question)
+        print(f"Answer: {answer}")
+        
+        # Generate summary
+        print("\nGenerating document summary:")
+        summary = assistant.generate_summary()
+        print(f"Summary: {summary}")
