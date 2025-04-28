@@ -7,7 +7,8 @@ import sys
 
 # Add the parent directory to path so we can import the module
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.join(current_dir, "..", "main", "python")
+# Go up to src, then down to main/python
+parent_dir = os.path.abspath(os.path.join(current_dir, "..", "main", "python"))
 sys.path.append(parent_dir)
 
 class TestRequiredLibraries(unittest.TestCase):
