@@ -74,17 +74,77 @@ Once cloned, you can navigate into the project directory with:
 cd Guided-Python-Development-with-LangChain
 ```
 
-To run the implementation:
+To run the implementation in interactive mode:
 
 ```bash
 python src/main/python/research_assistant.py
 ```
+
+In interactive mode, you'll be prompted to:
+
+- Enter the path to a document file
+- Ask a question about the document
+- View a generated summary of the document
+
+## Interactive Mode Instructions
+
+When running the implementation in interactive mode, you'll interact with the research assistant through a series of prompts. Here's what to expect:
+
+```bash
+python src/main/python/research_assistant.py
+```
+
+### Example Interaction:
+
+1. **When you run the program, you'll see:**
+   ```
+   AI Research Assistant initialized.
+   Enter the path to a document file:
+   ```
+
+2. **Enter the path to your document:**
+   ```
+   Enter the path to a document file: src/main/python/sample_document.txt
+   ```
+
+3. **The assistant will load and process the document:**
+   ```
+   Document loaded successfully! Length: 2491 characters
+   Processing document of length: 2491 characters
+   Document split into 3 chunks
+   Document processed successfully and split into 3 chunks
+   ```
+
+4. **You'll then be prompted to ask a question:**
+   ```
+   Enter a question about the document: What is LangChain used for?
+   ```
+
+5. **The assistant will answer your question:**
+   ```
+   Answer: The document mentions that LangChain is a framework for developing LLM-powered applications.
+   ```
+
+6. **Finally, the assistant will automatically generate a summary:**
+   ```
+   Generating document summary:
+   Summary: This document discusses artificial intelligence and its applications, including machine learning and natural language processing. It highlights LangChain as a framework for developing applications powered by language models, providing components like models, prompts, memory, and chains.
+   ```
+
+You can provide any document path and ask any question relevant to the document's content. The assistant will process the document, answer your question based on the document content, and generate a summary automatically.
 
 To run it in test mode:
 
 ```bash
 python src/main/python/research_assistant.py --test
 ```
+This will:
+
+Load the sample document
+Process the document automatically
+Run through predefined test questions
+Generate a summary of the document
+Display all results without requiring user input
 
 ## Testing Your Implementation
 
