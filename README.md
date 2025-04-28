@@ -94,12 +94,6 @@ To test a specific task, run the corresponding unit test. For example:
 python unittests/task_1_1_unittest.py
 ```
 
-To run all tests, navigate to the `unittests` directory and run:
-
-```bash
-python -m unittest discover
-```
-
 ## Lab Structure
 
 This lab is divided into 4 main tasks:
