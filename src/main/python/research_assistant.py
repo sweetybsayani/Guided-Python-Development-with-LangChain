@@ -138,7 +138,7 @@ if __name__ == "__main__":
     
     # Automatically run with sample document in test mode
     if auto_run:
-        sample_document = "sample_document.txt"
+        sample_document = "src/main/python/sample_document.txt"
         print(f"Loading document: {sample_document}")
         document_text = load_document(sample_document)
         
