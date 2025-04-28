@@ -64,7 +64,17 @@ pip install -r requirements.txt
 
 ## Running the Code
 
-To run your implementation:
+GitHub cloning command for this repository:
+```bash
+git clone https://github.com/sweetybsayani/Guided-Python-Development-with-LangChain.git
+```
+
+Once cloned, you can navigate into the project directory with:
+```bash
+cd Guided-Python-Development-with-LangChain
+```
+
+To run the implementation:
 
 ```bash
 python src/main/python/research_assistant.py
