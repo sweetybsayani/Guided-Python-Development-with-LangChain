@@ -37,28 +37,28 @@ class TestRequiredLibraries(unittest.TestCase):
         
         # Check PromptTemplate import
         if "from langchain.prompts import PromptTemplate" in content:
-            print("✅ PromptTemplate is correctly imported from langchain.prompts")
+            print(" PromptTemplate is correctly imported from langchain.prompts")
         else:
-            print("❌ ERROR: PromptTemplate is not imported correctly!")
+            print("ERROR: PromptTemplate is not imported correctly!")
             print("  SOLUTION: Add 'from langchain.prompts import PromptTemplate' at the top of your file")
             self.assertIn("from langchain.prompts import PromptTemplate", content,
                          "You need to import PromptTemplate from langchain.prompts")
             
         # Check LLMChain import
         if "from langchain.chains import LLMChain" in content:
-            print("✅ LLMChain is correctly imported from langchain.chains")
+            print("LLMChain is correctly imported from langchain.chains")
         else:
-            print("❌ ERROR: LLMChain is not imported correctly!")
+            print("ERROR: LLMChain is not imported correctly!")
             print("  SOLUTION: Add 'from langchain.chains import LLMChain' at the top of your file")
             self.assertIn("from langchain.chains import LLMChain", content,
                          "You need to import LLMChain from langchain.chains")
             
         # Check os import
         if "import os" in content:
-            print("✅ os is correctly imported")
+            print("os is correctly imported")
         else:
-            print("❌ ERROR: os is not imported!")
-            print("  SOLUTION: Add 'import os' at the top of your file")
+            print("ERROR: os is not imported!")
+            print(" SOLUTION: Add 'import os' at the top of your file")
             self.assertIn("import os", content,
                          "You need to import the os module")
         
